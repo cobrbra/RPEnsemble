@@ -17,8 +17,8 @@ RPChoose <-
       k1 <- 1
       RP <-  RPGenerate(p, d, method = projmethod, B2)
       XRP <- as.matrix(crossprod(t(XTrain), RP),n,d*B2)
-      print(1+1)
-      if (base == "knn")
+
+            if (base == "knn")
       {
         if(estmethod == "training") stop("training error estimate unsuitable for knn classifier") 
         if (estmethod == "loo"){
