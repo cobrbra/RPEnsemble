@@ -1,4 +1,4 @@
-#' Generate pairs (x,y) from joint distribution
+#' Generate pairs x,y from joint distribution
 #'
 #' @description Generates data from the models described in Cannings and Samworth (2016).
 #'
@@ -7,7 +7,8 @@
 #' @param p Data dimension
 #' @param Pi Class one prior probability
 #'
-#' @return \describe{
+#' @return 
+#' \describe{
 #'   \item{x}{An n by p data matrix – n observations of the p-dimensional features.}
 #'   \item{y}{A vector of length n containing the classes (either 1 or 2).}
 #'   } 
