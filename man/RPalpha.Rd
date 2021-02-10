@@ -12,13 +12,9 @@ RPalpha(RP.out, Y, p1)
 \item{Y}{Vector of length n or n.val containing the training or validation dataset classes.}
 
 \item{p1}{(Empirical) prior probability.}
-
-\item{x}{}
 }
 \value{
 The value of alpha that minimises the empirical error
-
-
 }
 \description{
 Chooses the best empirical value of the cutoff alpha, based on the leave-one-out, resubstitution or sample-split estimates of the class labels.
@@ -32,9 +28,6 @@ Test <- RPModel(1, 100, 100, 0.5)
 Out <- RPParallel(XTrain = Train$x, YTrain = Train$y, XTest = Test$x, d = 2, B1 = 10, 
                   B2 = 10, base = "LDA", projmethod = "Haar", estmethod = "training", cores = 1)
 alpha <- RPalpha(RP.out = Out, Y = Train$y, p1 = sum(Train$y == 1)/length(Train$y))
-alpha
-Title
-
 }
 \seealso{
 RPParallel

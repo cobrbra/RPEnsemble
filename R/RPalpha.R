@@ -28,14 +28,6 @@ RPalpha <- function(RP.out,
     vote1 <- rowMeans(Train.Class[Y == 1, ], na.rm = TRUE)
     vote2 <- rowMeans(Train.Class[Y == 2, ], na.rm = TRUE)
     
-#' Title
-#'
-#' @param x 
-#'
-#' @return
-#' @export
-#'
-#' @examples
     errecdfm <- function(x) {
         p1 * ecdf(vote1)(x) + (1 - p1) * (1 - ecdf(vote2)(x))
     }
