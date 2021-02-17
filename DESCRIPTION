@@ -15,6 +15,7 @@ Imports:
 License: GPL-3
 URL: http://arxiv.org/abs/1504.04595, http://www-bcf.usc.edu/~cannings/
 NeedsCompilation: no
+LazyData: true
 Packaged: 2017-10-06 23:34:39 UTC; timcannings
 Repository: CRAN
 Date/Publication: 2017-10-07 14:28:08 UTC

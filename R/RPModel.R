@@ -60,10 +60,8 @@ RPModel <- function(Model.No,
   }
     
   if (Model.No == 2) {
-    R <- NULL
-      
     if (p == 100) {
-      utils::data(R, envir = environment())
+      R <- RPEnsemble::R
     }
     
     Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
@@ -76,8 +74,6 @@ RPModel <- function(Model.No,
     X1 <- MASS::mvrnorm(Y1[1, 1], R %*% rep(0, p), R %*% Sigma1 %*% t(R))
     X2 <- MASS::mvrnorm(Y1[2, 1], R %*% mu, R %*% Sigma2 %*% t(R))
     X <- rbind(X1, X2)
-    
-    rm(R, envir = environment())
   }
   
   if (Model.No == 3) {
@@ -107,7 +103,7 @@ RPModel <- function(Model.No,
       X  <- rbind(X1, X2)
   }
   
-  return(list(x=X,y=Y))
+  return(list(x = X, y = Y))
 }
 
 tvt <- function(train,

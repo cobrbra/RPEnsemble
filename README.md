@@ -4,6 +4,8 @@
 # RPEnsemble
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/cobrbra/RPEnsemble/workflows/R-CMD-check/badge.svg)](https://github.com/cobrbra/RPEnsemble/actions)
 <!-- badges: end -->
 
 This is a fork of the package RPEnsemble (created by my supervisor
