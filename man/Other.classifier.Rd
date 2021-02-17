@@ -26,3 +26,6 @@ User defined code to convert existing R code for classification to the correct f
 \details{
 User editable code for your choice of base classifier.
 }
+\examples{
+Other.classifier(NULL, NULL, NULL)
+}

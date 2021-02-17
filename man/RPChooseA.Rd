@@ -47,3 +47,9 @@ Randomly projects the the data B2 times. Chooses the projection yielding the sma
 \note{
 Resubstitution method unsuitable for the k-nearest neighbour classifier.
 }
+\examples{
+set.seed(100)
+Train <- RPModel(1, 50, 100, 0.5)
+Choose <- RPChooseA(XTrain = Train$x, YTrain = Train$y, d = 2, B2 = 5, base = "QDA", 
+projmethod = "Haar", estmethod = "loo")
+}

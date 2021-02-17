@@ -61,7 +61,7 @@ RPModel <- function(Model.No,
     
   if (Model.No == 2) {
     if (p == 100) {
-      R <- RPEnsemble::R
+      R <- RPEnsemble::R # I feel like this shouldn't be needed with proper lazy-loading?
     }
     
     Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
@@ -106,6 +106,22 @@ RPModel <- function(Model.No,
   return(list(x = X, y = Y))
 }
 
+#' Train/Validation/Test Split
+#' 
+#' @description Produces sample IDs from a train/val/test split.
+#'
+#' @param train The number of training samples to generate IDs for.
+#' @param val The number of validation samples to generate IDs for.
+#' @param test The number of testing samples to generate IDs for.
+#' @param n If prop = TRUE, the total number of samples.
+#' @param prop If TRUE, the variables train, val and test act as proportions (and n is required).
+#'
+#' @return A list with three elements: train, val and test, containing a vector of IDs for each.
+#' @export
+#'
+#' @examples
+#' ids <- tvt(70, 20, 10)
+
 tvt <- function(train,
                 val,
                 test, 
@@ -125,18 +141,16 @@ tvt <- function(train,
       
       else {
         train <- floor(train * n)
-        val <- floor(train * n)
+        val <- floor(val * n)
         test <- n - train - val
       }
     }
   }
-  
-  else {
     
-    train_ids <- sample(1:(train + val + test), train)
-    val_ids <- sample(setdiff(1:(train + val + test), train_ids), val)
-    test_ids <- setdiff(1:(train + test), c(train_ids, val_ids))
-  }
+  train_ids <- sample(1:(train + val + test), train)
+  val_ids <- sample(setdiff(1:(train + val + test), train_ids), val)
+  test_ids <- setdiff(1:(train + test), c(train_ids, val_ids))
+  
   
   return(list(train = train_ids, val = val_ids, test = test_ids))
 }
