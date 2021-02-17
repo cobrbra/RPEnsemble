@@ -122,7 +122,6 @@ RPChoose <- function(XTrain,
 #'
 #' @param XTrain An n by p matrix containing the training data feature vectors.
 #' @param YTrain A vector of length n of the classes (either 1 or 2) of the training data.
-#' @param XTest An n.test by p matrix of the test data.
 #' @param d The lower dimension of the image space of the projections.
 #' @param B2 The block size.
 #' @param base The base classifier: one of "knn","LDA","QDA" or "other".
@@ -141,7 +140,6 @@ RPChoose <- function(XTrain,
 
 RPChooseA <- function(XTrain, 
                       YTrain, 
-                      XTest, 
                       d, 
                       B2 = 10, 
                       base = "LDA", 
@@ -151,7 +149,6 @@ RPChooseA <- function(XTrain,
                       ...) {
   
   n <- length(YTrain)
-  ntest <- nrow(XTest)
   p <- ncol(XTrain)
   k1 <- 1
   RP <- RPGenerate(p, d, method = projmethod, B2)
