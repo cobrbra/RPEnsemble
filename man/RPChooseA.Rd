@@ -7,7 +7,6 @@
 RPChooseA(
   XTrain,
   YTrain,
-  XTest,
   d,
   B2 = 10,
   base = "LDA",
@@ -21,8 +20,6 @@ RPChooseA(
 \item{XTrain}{An n by p matrix containing the training data feature vectors.}
 
 \item{YTrain}{A vector of length n of the classes (either 1 or 2) of the training data.}
-
-\item{XTest}{An n.test by p matrix of the test data.}
 
 \item{d}{The lower dimension of the image space of the projections.}
 

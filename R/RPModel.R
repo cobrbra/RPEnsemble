@@ -63,7 +63,7 @@ RPModel <- function(Model.No,
     R <- NULL
       
     if (p == 100) {
-      data(R, envir = environment())
+      utils::data(R, envir = environment())
     }
     
     Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))

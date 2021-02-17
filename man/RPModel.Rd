@@ -4,7 +4,7 @@
 \alias{RPModel}
 \title{Generate pairs x,y from joint distribution}
 \usage{
-RPModel(Model.No, n, p, Pi = 1/2)
+RPModel(Model.No, n, p, Pi = 0.5)
 }
 \arguments{
 \item{Model.No}{Model Number}

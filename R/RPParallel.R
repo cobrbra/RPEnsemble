@@ -52,33 +52,33 @@ RPParallel <- function(XTrain,
                        ... ) {
   
   if (clustertype == "Default") {
-    cluster = makePSOCKcluster(1)
+    cluster = parallel::makePSOCKcluster(1)
   }
   
   if (clustertype == "Fork") {
-    cluster = makeForkCluster(cores)
+    cluster = parallel::makeFORKCluster(cores)
   }
   
   if (clustertype == "Socket") {
-    cluster = makePSOCKcluster(names = machines)
+    cluster = parallel::makePSOCKcluster(names = machines)
   }
   
-  clusterExport(cluster, c(ls(),"knn.cv", "knn", "lda", "qda"), envir = environment())
+  parallel::clusterExport(cluster, c(ls(),"knn.cv", "knn", "lda", "qda"), envir = environment())
 
   if (is.null(seed) == FALSE) {
-    clusterSetRNGStream(cluster, seed)
+    parallel::clusterSetRNGStream(cluster, seed)
   }
 
   if (estmethod == "samplesplit") {
       n.val <- length(YVal)
-      RP.out <- simplify2array(parLapply(cl = cluster, 1:B1, function(x){return(RPChooseSS(XTrain, YTrain, XVal, YVal, XTest, d, B2, base, k, projmethod))}))
+      RP.out <- simplify2array(parallel::parLapply(cl = cluster, 1:B1, function(x){return(RPChooseSS(XTrain, YTrain, XVal, YVal, XTest, d, B2, base, k, projmethod))}))
   }
   
   else {
-    RP.out <- simplify2array(parLapply(cl = cluster, 1:B1, function(x){return(RPChoose(XTrain, YTrain, XTest, d, B2, base, k, projmethod, estmethod))}))
+    RP.out <- simplify2array(parallel::parLapply(cl = cluster, 1:B1, function(x){return(RPChoose(XTrain, YTrain, XTest, d, B2, base, k, projmethod, estmethod))}))
   }
   
-  stopCluster(cluster) 
+  parallel::stopCluster(cluster) 
   
  return (RP.out)
 }

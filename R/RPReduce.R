@@ -25,7 +25,7 @@ RPConcatenateA <- function(XTrain,
   
 }
 
-RPReduce <- function(XTrain,
+RPDecompose <- function(XTrain,
                      YTrain,
                      d,
                      B1 = 100,
@@ -37,9 +37,30 @@ RPReduce <- function(XTrain,
                              base = base, estmethod = estmethod)
   
   average_projection <- (1/B1) * A_concat %*% t(A_concat)
-  reduction <- svd(average_projection)
+  decomposition <- svd(average_projection)
   
-  return(reduction)
+  return(decomposition)
+  
+}
+
+RPReduce <- function(XTrain,
+         YTrain,
+         XTest,
+         YTest = NULL,
+         reduced_dim = 2,
+         d,
+         B1 = 100,
+         B2 = 10,
+         base = "LDA",
+         estmethod = "training",
+         decomposition = NULL) {
+
+  if (is.null(decomposition)) {
+    decomposition <- RPDecompose(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, B2 = B2, 
+                                 base = base, estmethod = estmethod)
+  }
+  
+  
   
 }
 

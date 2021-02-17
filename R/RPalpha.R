@@ -29,15 +29,15 @@ RPalpha <- function(RP.out,
     vote2 <- rowMeans(Train.Class[Y == 2, ], na.rm = TRUE)
     
     errecdfm <- function(x) {
-        p1 * ecdf(vote1)(x) + (1 - p1) * (1 - ecdf(vote2)(x))
+        p1 * stats::ecdf(vote1)(x) + (1 - p1) * (1 - stats::ecdf(vote2)(x))
     }
     
     errecdfM <- function(x) {
-        p1 * ecdf(vote1)(-x) + (1 - p1) * (1 - ecdf(vote2)(-x))
+        p1 * stats::ecdf(vote1)(-x) + (1 - p1) * (1 - stats::ecdf(vote2)(-x))
     }
     
-    alpham <- optimise(errecdfm, c(1, 2), maximum = TRUE)$maximum
-    alphaM <- optimise(errecdfM, c(-2, -1), maximum = TRUE)$maximum
+    alpham <- stats::optimise(errecdfm, c(1, 2), maximum = TRUE)$maximum
+    alphaM <- stats::optimise(errecdfM, c(-2, -1), maximum = TRUE)$maximum
     alpha <- (alpham - alphaM)/2
     
     return(alpha)

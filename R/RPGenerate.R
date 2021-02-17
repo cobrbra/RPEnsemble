@@ -29,11 +29,11 @@ RPGenerate <- function(p=100,
     }
     
     if (method == "Gaussian") {
-        Q <-matrix(1/sqrt(p)*rnorm(p*d*B2,0,1),p,d*B2)
+        Q <-matrix(1/sqrt(p)*stats::rnorm(p*d*B2,0,1),p,d*B2)
     }   
        
     if (method == "Haar") {
-        R0 <- matrix(1/sqrt(p)*rnorm(p*d*B2,0,1),p,d*B2)
+        R0 <- matrix(1/sqrt(p)*stats::rnorm(p*d*B2,0,1),p,d*B2)
         Q <- matrix(sapply(1:B2-1, FUN = function(s){qr.Q(qr(R0[,s*d+1:d]))[,1:d]}),p,B2*d)
     }           
     

@@ -56,29 +56,29 @@ RPChooseSS <- function(XTrain,
   XRPVal <- as.matrix(crossprod(t(XVal), RP),n.val,B2*d)
   
   if (base == "knn") {
-    weight.test <- sapply(1:B2, function(j){min(sapply(k,function(x){mean(knn(as.matrix(XRP[, d*(j-1) + 1:d],n,d), as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d), YTrain, x) != YVal, na.rm = TRUE)}))})
+    weight.test <- sapply(1:B2, function(j){min(sapply(k,function(x){mean(class::knn(as.matrix(XRP[, d*(j-1) + 1:d],n,d), as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d), YTrain, x) != YVal, na.rm = TRUE)}))})
     cols1 <- d*(which.min(weight.test) - 1) + 1:d
-    kcv.voteRP <- sapply(k,function(x){mean(knn(as.matrix(XRP[,cols1],n,d), as.matrix(XRPVal[,cols1],n.val,d), YTrain, x) != YVal, na.rm = TRUE)})
+    kcv.voteRP <- sapply(k,function(x){mean(class::knn(as.matrix(XRP[,cols1],n,d), as.matrix(XRPVal[,cols1],n.val,d), YTrain, x) != YVal, na.rm = TRUE)})
     k1 <- k[which.min(kcv.voteRP)]
-    Val.Class <- as.numeric(knn(as.matrix(XRP[,cols1],n,d), as.matrix(XRPVal[,cols1],n.val,d), YTrain, k1))
+    Val.Class <- as.numeric(class::knn(as.matrix(XRP[,cols1],n,d), as.matrix(XRPVal[,cols1],n.val,d), YTrain, k1))
     XRPTest <- as.matrix(crossprod(t(XTest),RP[,cols1]),n.test,d)
-    Test.Class <- as.numeric(knn(as.matrix(XRP[,cols1],n,d), XRPTest, YTrain, k1))
+    Test.Class <- as.numeric(class::knn(as.matrix(XRP[,cols1],n,d), XRPTest, YTrain, k1))
   }
     
   if (base == "LDA") {
-    weight.test <- sapply(1:B2, function(j){mean(predict(lda(x =  as.matrix(XRP[, d*(j-1) + 1:d],n,d), grouping = YTrain),  as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d))$class != YVal, na.rm = TRUE)})
+    weight.test <- sapply(1:B2, function(j){mean(stats::predict(MASS::lda(x =  as.matrix(XRP[, d*(j-1) + 1:d],n,d), grouping = YTrain),  as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d))$class != YVal, na.rm = TRUE)})
     cols1 <- d*(which.min(weight.test) - 1) + 1:d
-    Val.Class <- as.numeric(predict(lda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), as.matrix(XRPVal[,cols1],n.val,d))$class)
+    Val.Class <- as.numeric(stats::predict(MASS::lda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), as.matrix(XRPVal[,cols1],n.val,d))$class)
     XRPTest <- as.matrix(crossprod(t(XTest),RP[,cols1]),n.test,d)
-    Test.Class <- as.numeric(predict(lda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), XRPTest)$class)
+    Test.Class <- as.numeric(stats::predict(MASS::lda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), XRPTest)$class)
   }
   
   if (base == "QDA") {      
-    weight.test <- sapply(1:B2, function(j){mean(predict(qda(x =  as.matrix(XRP[, d*(j-1) + 1:d],n,d), grouping = YTrain),  as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d))$class != YVal, na.rm = TRUE)})
+    weight.test <- sapply(1:B2, function(j){mean(stats::predict(MASS::qda(x =  as.matrix(XRP[, d*(j-1) + 1:d],n,d), grouping = YTrain),  as.matrix(XRPVal[, d*(j-1) + 1:d],n.val,d))$class != YVal, na.rm = TRUE)})
     cols1 <-  d*(which.min(weight.test) - 1) + 1:d
-    Val.Class <- as.numeric(predict(qda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), as.matrix(XRPVal[,cols1],n.val,d))$class)
+    Val.Class <- as.numeric(stats::predict(MASS::qda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), as.matrix(XRPVal[,cols1],n.val,d))$class)
     XRPTest <- as.matrix(crossprod(t(XTest),RP[,cols1]),n.test,d)
-    Test.Class <- as.numeric(predict(qda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), XRPTest)$class)
+    Test.Class <- as.numeric(stats::predict(MASS::qda(x = as.matrix(XRP[,cols1],n,d), grouping = YTrain), XRPTest)$class)
   }
     
   if (base == "Other") {
