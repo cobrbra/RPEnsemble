@@ -32,7 +32,7 @@ RPConcatenateA <- function(XTrain,
   p <- ncol(XTrain)
   A_concat <- matrix(0, p, d * B1)
   
-  print("Choosing projections")
+  cat("\nChoosing projections")
   pb = utils::txtProgressBar(min = 0, max = B1, initial = 0, style = 3) 
   
   
@@ -74,18 +74,18 @@ RPConcatenateA <- function(XTrain,
 #' projmethod = "Haar", estmethod = "loo")
 
 RPDecomposeA <- function(XTrain,
-                     YTrain,
-                     d,
-                     B1 = 100,
-                     B2 = 10,
-                     base = "LDA",
-                     projmethod = "Haar",
-                     estmethod = "training") {
+                         YTrain,
+                         d,
+                         B1 = 100,
+                         B2 = 10,
+                         base = "LDA",
+                         projmethod = "Haar",
+                         estmethod = "training") {
   
   A_concat <- RPConcatenateA(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, B2 = B2, 
                              base = base, projmethod = projmethod, estmethod = estmethod)
   
-  print("Decomposing matrix")
+  cat("\nDecomposing matrix")
   average_projection <- (1/B1) * A_concat %*% t(A_concat)
   decomposition <- svd(average_projection)
   names(decomposition) <- c("eigv", "u", "v")
@@ -118,31 +118,36 @@ RPDecomposeA <- function(XTrain,
 #' set.seed(100)
 #' Train <- RPModel(1, 50, 100, 0.5)
 #' Test <- RPModel(1, 50, 100, 0.5)
-#' Rep <- RPReduceA(XTrain = Train$x, YTrain = Train$y, XTest = Test$x, reduced_dim = 2, d = 3, 
+#' Rep <- RPReduce(XTrain = Train$x, YTrain = Train$y, XTest = Test$x, reduced_dim = 2, d = 3, 
 #' B1 = 10, B2 = 5, base = "QDA", projmethod = "Haar", estmethod = "loo")
 
-RPReduceA <- function(XTrain,
-         YTrain,
-         XTest,
-         YTest = NULL,
-         reduced_dim = 2,
-         d,
-         B1 = 100,
-         B2 = 10,
-         base = "LDA",
-         projmethod = "Haar",
-         estmethod = "training",
-         decomposition = NULL) {
+RPReduce <- function(XTrain,
+                     YTrain,
+                     XTest,
+                     YTest = NULL,
+                     reduced_dim = 2,
+                     d,
+                     B1 = 100,
+                     B2 = 10,
+                     base = "LDA",
+                     projmethod = "Haar",
+                     estmethod = "training",
+                     decomposition = NULL) {
 
   if (is.null(decomposition)) {
     decomposition <- RPDecomposeA(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, B2 = B2, 
                                  base = base, projmethod = projmethod, estmethod = estmethod)
   }
   
-  print("Producing reductions")
-  reductions <- XTest %*% decomposition$v[, 1:reduced_dim, drop = FALSE] 
+  cat("\nProducing reductions")
+  reductions <- as.data.frame(XTest %*% decomposition$v[, 1:reduced_dim, drop = FALSE])
+  colnames(reductions) <- paste0("Dim_", 1:reduced_dim)
   
-  return(list(XTest_r = reductions, YTest = YTest))
+  if (!is.null(YTest)) {
+    reductions$YTest <- factor(YTest)
+  }
+  
+  return(reductions)
 }
 
 
