@@ -24,32 +24,39 @@
 RPModel <- function(Model.No,
                     n,
                     p,
-                    Pi = 1/2) {
+                    Pi = 0.5) {
+  
   if (Model.No == 1) {
-    Y1 <- rmultinom(1,n,c(Pi,1-Pi))
-    Y <- c(rep(1,Y1[1,1]),rep(2,Y1[2,1]))
-    Y11 <- rmultinom(1,Y1[1,1],c(1/2,1/2))
-    Y22 <- rmultinom(1,Y1[2,1],c(1/2,1/2))
-    mu1 <- c(2, 2, rep(0,p-2))
-    mu2 <- c(2,-2, rep(0,p-2))
+    
+    Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
+    Y <- c(rep(1, Y1[1, 1]), rep(2, Y1[2, 1]))
+    Y11 <- stats::rmultinom(1, Y1[1, 1], c(0.5, 0.5))
+    Y22 <- stats::rmultinom(1, Y1[2, 1], c(0.5, 0.5))
+    
+    mu1 <- c(2, 2, rep(0, p - 2))
+    mu2 <- c(2, -2, rep(0, p - 2))
       
     if (p == 100) {
-      X1 <- rbind(t(matrix(mu1,p,Y11[1,1])),t(matrix(-mu1,p,Y11[2,1]))) + matrix(rnorm(Y1[1,1]*p),Y1[1,1],p)
-    }
+      Signal1 <- rbind(t(matrix(mu1, p, Y11[1, 1])), t(matrix(-mu1, p, Y11[2, 1])))
+      Noise1 <- matrix(stats::rnorm(Y1[1, 1]*p), Y1[1, 1], p)
+      X1 <- Signal1 + Noise1
     
-    if (p == 100) {
-      X2 <- rbind(t(matrix(mu2,p,Y22[1,1])),t(matrix(-mu2,p,Y22[2,1]))) + matrix(rnorm(Y1[2,1]*p),Y1[2,1],p)
+      Signal2 <- rbind(t(matrix(mu2, p, Y22[1, 1])), t(matrix(-mu2, p, Y22[2, 1])))
+      Noise2 <- matrix(stats::rnorm(Y1[2, 1]*p), Y1[2, 1], p)
+      X2 <- Signal2 + Noise2
     }
       
     if (p == 1000) {
-      X1 <- rbind(t(matrix(mu1,p,Y11[1,1])),t(matrix(-mu1,p,Y11[2,1]))) + cbind(matrix(rnorm(Y1[1,1]*2),Y1[1,1],2), matrix(rnorm(Y1[1,1]*(p-2))/4,Y1[1,1],p-2))
-    }
-    
-    if (p == 1000) {
-      X2 <- rbind(t(matrix(mu2,p,Y22[1,1])),t(matrix(-mu2,p,Y22[2,1]))) + cbind(matrix(rnorm(Y1[2,1]*2),Y1[2,1],2), matrix(rnorm(Y1[2,1]*(p-2))/4,Y1[2,1],p-2))
+      Signal1 <- rbind(t(matrix(mu1, p, Y11[1, 1])), t(matrix(-mu1, p, Y11[2, 1])))
+      Noise1 <- cbind(matrix(stats::rnorm(Y1[1, 1]*2), Y1[1, 1], 2), matrix(stats::rnorm(Y1[1, 1]*(p - 2))/4, Y1[1, 1], p - 2))
+      X1 <- Signal1 + Noise1
+      
+      Signal2 <- rbind(t(matrix(mu2, p, Y22[1, 1])), t(matrix(-mu2, p, Y22[2, 1])))
+      Noise2 <- cbind(matrix(stats::rnorm(Y1[2, 1]*2), Y1[2, 1], 2), matrix(stats::rnorm(Y1[2, 1]*(p - 2))/4, Y1[2, 1], p - 2))
+      X2 <- Signal2 + Noise2
     }
       
-    X <- rbind(X1,X2)
+    X <- rbind(X1, X2)
   }
     
   if (Model.No == 2) {
@@ -59,39 +66,81 @@ RPModel <- function(Model.No,
       data(R, envir = environment())
     }
     
-    Y1 <- rmultinom(1,n,c(Pi,1-Pi))
-    Y <- c(rep(1,Y1[1,1]),rep(2,Y1[2,1]))
-    mu <- c(rep(3,3), rep(0,p-3))
-    Sigma1 <- 0.5*diag(c(rep(1,3),rep(0,p-3)))+0.5*c(rep(1,3),rep(0,p-3))%*%t(c(rep(1,3),rep(0,p-3))) + 0.5*diag(c(rep(0,3),rep(1,p-3)))+0.5*c(rep(0,3),rep(1,p-3))%*%t(c(rep(0,3),rep(1,p-3)))
-    Sigma2 <- 1.5*diag(c(rep(1,3),rep(0,p-3)))+0.5*c(rep(1,3),rep(0,p-3))%*%t(c(rep(1,3),rep(0,p-3))) + 0.5*diag(c(rep(0,3),rep(1,p-3)))+0.5*c(rep(0,3),rep(1,p-3))%*%t(c(rep(0,3),rep(1,p-3)))
-    X1 <- mvrnorm(Y1[1,1],R%*%rep(0,p),R%*%Sigma1%*%t(R))
-    X2 <- mvrnorm(Y1[2,1],R%*%mu,R%*%Sigma2%*%t(R))
-    X <- rbind(X1,X2)
+    Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
+    Y <- c(rep(1, Y1[1, 1]), rep(2, Y1[2, 1]))
+    
+    mu <- c(rep(3, 3), rep(0, p - 3))
+    Sigma1 <- 0.5 * diag(c(rep(1, 3), rep(0, p - 3))) + 0.5 * c(rep(1, 3), rep(0, p - 3)) %*% t(c(rep(1, 3), rep(0, p - 3))) + 0.5 * diag(c(rep(0, 3), rep(1, p - 3))) + 0.5 * c(rep(0, 3), rep(1, p - 3)) %*% t(c(rep(0, 3), rep(1, p - 3)))
+    Sigma2 <- 1.5 * diag(c(rep(1, 3), rep(0, p - 3))) + 0.5 * c(rep(1, 3), rep(0, p - 3)) %*% t(c(rep(1, 3), rep(0, p - 3))) + 0.5 * diag(c(rep(0, 3), rep(1, p - 3))) + 0.5 * c(rep(0, 3), rep(1, p - 3)) %*% t(c(rep(0, 3), rep(1, p - 3)))
+     
+    X1 <- MASS::mvrnorm(Y1[1, 1], R %*% rep(0, p), R %*% Sigma1 %*% t(R))
+    X2 <- MASS::mvrnorm(Y1[2, 1], R %*% mu, R %*% Sigma2 %*% t(R))
+    X <- rbind(X1, X2)
     
     rm(R, envir = environment())
   }
   
   if (Model.No == 3) {
-    Y1 <- rmultinom(1,n,c(Pi,1-Pi))
-    Y <- c(rep(1,Y1[1,1]),rep(2,Y1[2,1]))
-    mu <- c(rep(1/sqrt(p),p/2),rep(0,p/2))
-    X1 <- cbind(matrix(sample(c(-1,1),Y1[1,1]*p, replace = TRUE)*rexp(Y1[1,1]*p,1),Y1[1,1],p))
-    X2 <- mvrnorm(Y1[2,1],mu,diag(p))
-    X  <- rbind(X1,X2)
+    Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
+    Y <- c(rep(1, Y1[1, 1]), rep(2, Y1[2, 1]))
+   
+    mu <- c(rep(1/sqrt(p), p/2), rep(0, p/2))
+    
+    X1 <- cbind(matrix(sample(c(-1, 1), Y1[1, 1] * p, replace = TRUE) * stats::rexp(Y1[1, 1] * p, 1), Y1[1, 1], p))
+    X2 <- MASS::mvrnorm(Y1[2, 1], mu, diag(p))
+    X  <- rbind(X1, X2)
   }
     
   if (Model.No == 4) {
-      Y1 <- rmultinom(1,n,c(Pi,1-Pi))
-      Y <- c(rep(1,Y1[1,1]),rep(2,Y1[2,1]))
-      mu <- c(rep(1,10),rep(0,p-10))
-      U1 <- rchisq(Y1[1,1],1)
-      U2 <- rchisq(Y1[2,1],2)
+    
+      Y1 <- stats::rmultinom(1, n, c(Pi, 1 - Pi))
+      Y <- c(rep(1, Y1[1, 1]), rep(2, Y1[2, 1]))
+      
+      mu <- c(rep(1, 10), rep(0, p - 10))
+      U1 <- stats::rchisq(Y1[1, 1], 1)
+      U2 <- stats::rchisq(Y1[2, 1], 2)
       Sigma1 <- diag(p)
-      Sigma2 <- 0.5*diag(p)+0.5*c(rep(1,10),rep(0,p-10))%*%t(c(rep(1,10),rep(0,p-10))) + 0.5*diag(c(rep(0,10),rep(1,p-10)))
-      X1 <- mvrnorm(Y1[1,1],rep(0,p),Sigma1)/sqrt(U1/1)
-      X2 <- t(mu + t(mvrnorm(Y1[2,1],rep(0,p),Sigma2)/sqrt(U2/2)))
-      X  <- rbind(X1,X2)
+      Sigma2 <- 0.5 * diag(p) + 0.5 * c(rep(1, 10), rep(0, p - 10)) %*% t(c(rep(1, 10), rep(0, p - 10))) + 0.5 * diag(c(rep(0, 10), rep(1, p - 10)))
+      
+      X1 <- MASS::mvrnorm(Y1[1, 1], rep(0, p), Sigma1) / sqrt(U1/1)
+      X2 <- t(mu + t(MASS::mvrnorm(Y1[2, 1], rep(0, p), Sigma2) / sqrt(U2/2)))
+      X  <- rbind(X1, X2)
   }
   
   return(list(x=X,y=Y))
+}
+
+tvt <- function(train,
+                val,
+                test, 
+                n = NULL,
+                prop = FALSE) {
+  
+  if (prop) {
+    if (is.null(n)) {
+      stop("Need a total value for n")
+    }
+    
+    else {
+      
+      if (abs(sum(prop) - 1) > 10^(-6)) {
+        stop(paste("Probabilities in prop must sum to 1, not", sum(prop)))
+      }
+      
+      else {
+        train <- floor(train * n)
+        val <- floor(train * n)
+        test <- n - train - val
+      }
+    }
+  }
+  
+  else {
+    
+    train_ids <- sample(1:(train + val + test), train)
+    val_ids <- sample(setdiff(1:(train + val + test), train_ids), val)
+    test_ids <- setdiff(1:(train + test), c(train_ids, val_ids))
+  }
+  
+  return(list(train = train_ids, val = val_ids, test = test_ids))
 }
