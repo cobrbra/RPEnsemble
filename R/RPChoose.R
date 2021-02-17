@@ -164,8 +164,8 @@ RPChooseA <- function(XTrain,
     }
     
     if (estmethod == "loo") {
-      weight.test <- sapply(1:B2, function(j) {min(sapply(k, function(x) {mean(class::knn.cv(as.matrix(XRP[, d * (j - 1) + 1:d], n, d), YTrain, x) != YTrain, na.rm = TRUE)}))
-      })
+      weight.test <- sapply(1:B2, function(j) {min(sapply(k, function(x) {mean(class::knn.cv(as.matrix(XRP[, d * (j - 1) + 1:d], n, d), YTrain, x) != YTrain, na.rm = TRUE)}))})
+      cols1 <- d * (which.min(weight.test) - 1) + 1:d
     }
   }
   
