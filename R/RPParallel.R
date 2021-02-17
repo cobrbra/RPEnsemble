@@ -20,6 +20,9 @@
 #' @param seed If not NULL, sets random seed for reproducible results.
 #' @param ... Optional further arguments if base = "other".
 #' 
+#' @importFrom MASS lda qda
+#' @importFrom class knn knn.cv
+#' 
 #' @details Makes B1 calls to RPChoose or RPChooseSS in parallel..
 #'
 #' @return If estmethod == "training" or "loo" , then returns an n+n.test by B1 matrix, each row containing the result of a call to RPChoose. If estmethod == "samplesplit", then returns an n.val+n.test by B1 matrix, each row containing the result of a call to RPChooseSS.
@@ -56,14 +59,14 @@ RPParallel <- function(XTrain,
   }
   
   if (clustertype == "Fork") {
-    cluster = parallel::makeFORKCluster(cores)
+    cluster = parallel::makeForkCluster(cores)
   }
   
   if (clustertype == "Socket") {
     cluster = parallel::makePSOCKcluster(names = machines)
   }
   
-  parallel::clusterExport(cluster, c(ls(),"knn.cv", "knn", "lda", "qda"), envir = environment())
+  parallel::clusterExport(cluster, c(ls(), "knn.cv", "knn", "lda", "qda"), envir = environment())
 
   if (is.null(seed) == FALSE) {
     parallel::clusterSetRNGStream(cluster, seed)
