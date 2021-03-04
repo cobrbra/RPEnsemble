@@ -8,10 +8,11 @@ Description: Implements the methodology of "Cannings, T. I. and Samworth, R. J. 
 Depends: 
     R (>= 3.4.2)
 Imports: 
-    class, 
+    class,
     stats,
     MASS,
-    parallel
+    parallel,
+    farff
 License: GPL-3
 URL: http://arxiv.org/abs/1504.04595, http://www-bcf.usc.edu/~cannings/
 NeedsCompilation: no
