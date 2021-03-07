@@ -16,19 +16,21 @@ RPModel(Model.No, n, p, Pi = 0.5)
 \item{Pi}{Class one prior probability}
 }
 \value{
+A list with two elements: data and subspace. The element data is itself a list containing:
 \describe{
   \item{x}{An n by p data matrix – n observations of the p-dimensional features.}
   \item{y}{A vector of length n containing the classes (either 1 or 2).}
-  }
+  } 
+The element subspace is a matrix containing an orthonormal set of column vectors spanning the sufficient subspace (if NULL, no such subspace exists).
 }
 \description{
-Generates data from the models described in Cannings and Samworth (2016).
+Generates data from the models described in Cannings and Samworth (2017).
 }
 \note{
 Models 1 and 2 require p = 100 or 1000.
 }
 \examples{
-Data <- RPModel(Model.No = 1, 100, 100, Pi = 1/2)
+Data <- RPModel(Model.No = 1, 100, 100, Pi = 1/2)$data
 table(Data$y)
 colMeans(Data$x[Data$y==1,])
 colMeans(Data$x[Data$y==2,])

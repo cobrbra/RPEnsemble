@@ -8,7 +8,7 @@ RPReduce(
   XTrain,
   YTrain,
   XTest,
-  YTest = NULL,
+  YTest,
   reduced_dim = 2,
   d,
   B1 = 100,
@@ -23,10 +23,6 @@ RPReduce(
 \item{XTrain}{An n by p matrix containing the training data feature vectors.}
 
 \item{YTrain}{A vector of length n of the classes (either 1 or 2) of the training data.}
-
-\item{XTest}{An n.test by p matrix containing the test data feature vectors.}
-
-\item{YTest}{A vector of length n.test of the classes (either 1 or 2) of the test data.}
 
 \item{reduced_dim}{The dimensionality of reduced data to produce.}
 
@@ -43,6 +39,10 @@ RPReduce(
 \item{estmethod}{Method for estimating the test errors to choose the projection: either training error "training", leave-one-out "loo", or sample split "samplesplit".}
 
 \item{decomposition}{(optional) the result of a call to RPDecomposeA().}
+
+\item{XVal}{An n.test by p matrix containing the validation data feature vectors.}
+
+\item{YVal}{A vector of length n.val of the classes (either 1 or 2) of the validation data.}
 }
 \value{
 A list with two elements, XTest_r and YTest. XTest_r is an n.test by reduced_dim sized matrix containing reduced data representations. YTest is whatever has been provided.

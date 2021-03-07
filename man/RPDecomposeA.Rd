@@ -7,6 +7,8 @@
 RPDecomposeA(
   XTrain,
   YTrain,
+  XVal = NULL,
+  YVal = NULL,
   d,
   B1 = 100,
   B2 = 10,
@@ -19,6 +21,10 @@ RPDecomposeA(
 \item{XTrain}{An n by p matrix containing the training data feature vectors.}
 
 \item{YTrain}{A vector of length n of the classes (either 1 or 2) of the training data.}
+
+\item{XVal}{An n.test by p matrix containing the validation data feature vectors.}
+
+\item{YVal}{A vector of length n.val of the classes (either 1 or 2) of the validation data.}
 
 \item{d}{The lower dimension of the image space of the projections.}
 

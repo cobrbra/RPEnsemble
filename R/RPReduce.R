@@ -4,6 +4,8 @@
 #'
 #' @param XTrain An n by p matrix containing the training data feature vectors.
 #' @param YTrain A vector of length n of the classes (either 1 or 2) of the training data.
+#' @param XVal An n.test by p matrix containing the validation data feature vectors.
+#' @param YVal A vector of length n.val of the classes (either 1 or 2) of the validation data. 
 #' @param d The lower dimension of the image space of the projections.
 #' @param B1 The number of blocks.
 #' @param B2 The block size.
@@ -22,6 +24,8 @@
 
 RPConcatenateA <- function(XTrain, 
                            YTrain,
+                           XVal = NULL,
+                           YVal = NULL, 
                            d,
                            B1 = 100,
                            B2 = 10,
@@ -37,13 +41,20 @@ RPConcatenateA <- function(XTrain,
   
   
   for (b1 in 1:B1) {
-    A_concat[, (b1-1)*d + 1:d] <- RPChooseA(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, 
-                                            B2 = B2, base = base, projmethod = projmethod, 
-                                            estmethod = estmethod)
-  
-    utils::setTxtProgressBar(pb, b1)
-    
+    if (estmethod == "samplesplit") {
+      A_concat[, (b1-1)*d + 1:d] <- RPChooseSSA(XTrain = XTrain, YTrain = YTrain, XVal = XVal, YVal = YVal, d = d, B1 = B1, 
+                                                B2 = B2, base = base, projmethod = projmethod, 
+                                                estmethod = estmethod)
     }
+    
+    else {
+      A_concat[, (b1-1)*d + 1:d] <- RPChooseA(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, 
+                                              B2 = B2, base = base, projmethod = projmethod, 
+                                              estmethod = estmethod)
+    }
+    
+    utils::setTxtProgressBar(pb, b1)
+  }
   
   return(A_concat)
   
@@ -55,7 +66,9 @@ RPConcatenateA <- function(XTrain,
 #' outputs the singular value decomposition.
 #' 
 #' @param XTrain An n by p matrix containing the training data feature vectors.
-#' @param YTrain A vector of length n of the classes (either 1 or 2) of the training data. 
+#' @param YTrain A vector of length n of the classes (either 1 or 2) of the training data.
+#' @param XVal An n.test by p matrix containing the validation data feature vectors.
+#' @param YVal A vector of length n.val of the classes (either 1 or 2) of the validation data.  
 #' @param d The lower dimension of the image space of the projections.
 #' @param B1 The number of blocks.
 #' @param B2 The block size.
@@ -75,6 +88,8 @@ RPConcatenateA <- function(XTrain,
 
 RPDecomposeA <- function(XTrain,
                          YTrain,
+                         XVal = NULL,
+                         YVal = NULL, 
                          d,
                          B1 = 100,
                          B2 = 10,
@@ -82,7 +97,7 @@ RPDecomposeA <- function(XTrain,
                          projmethod = "Haar",
                          estmethod = "training") {
   
-  A_concat <- RPConcatenateA(XTrain = XTrain, YTrain = YTrain, d = d, B1 = B1, B2 = B2, 
+  A_concat <- RPConcatenateA(XTrain = XTrain, YTrain = YTrain, XVal = XVal, YVal = YVal, d = d, B1 = B1, B2 = B2, 
                              base = base, projmethod = projmethod, estmethod = estmethod)
   
   cat("\nDecomposing matrix")
@@ -100,8 +115,8 @@ RPDecomposeA <- function(XTrain,
 #'
 #' @param XTrain An n by p matrix containing the training data feature vectors.
 #' @param YTrain A vector of length n of the classes (either 1 or 2) of the training data. 
-#' @param XTest An n.test by p matrix containing the test data feature vectors.
-#' @param YTest A vector of length n.test of the classes (either 1 or 2) of the test data. 
+#' @param XVal An n.test by p matrix containing the validation data feature vectors.
+#' @param YVal A vector of length n.val of the classes (either 1 or 2) of the validation data. 
 #' @param reduced_dim The dimensionality of reduced data to produce.
 #' @param d The lower dimension of the image space of the projections.
 #' @param B1 The number of blocks.
@@ -124,7 +139,7 @@ RPDecomposeA <- function(XTrain,
 RPReduce <- function(XTrain,
                      YTrain,
                      XTest,
-                     YTest = NULL,
+                     YTest,
                      reduced_dim = 2,
                      d,
                      B1 = 100,

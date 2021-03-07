@@ -1,6 +1,6 @@
 #' Generate pairs x,y from joint distribution
 #'
-#' @description Generates data from the models described in Cannings and Samworth (2016).
+#' @description Generates data from the models described in Cannings and Samworth (2017).
 #'
 #' @param Model.No Model Number
 #' @param n Sample size
@@ -8,15 +8,17 @@
 #' @param Pi Class one prior probability
 #'
 #' @return 
+#' A list with two elements: data and subspace. The element data is itself a list containing:
 #' \describe{
 #'   \item{x}{An n by p data matrix – n observations of the p-dimensional features.}
 #'   \item{y}{A vector of length n containing the classes (either 1 or 2).}
 #'   } 
+#' The element subspace is a matrix containing an orthonormal set of column vectors spanning the sufficient subspace (if NULL, no such subspace exists).
 #' @export
 #'
 #' @note Models 1 and 2 require p = 100 or 1000.
 #' @examples
-#' Data <- RPModel(Model.No = 1, 100, 100, Pi = 1/2)
+#' Data <- RPModel(Model.No = 1, 100, 100, Pi = 1/2)$data
 #' table(Data$y)
 #' colMeans(Data$x[Data$y==1,])
 #' colMeans(Data$x[Data$y==2,])
@@ -25,6 +27,8 @@ RPModel <- function(Model.No,
                     n,
                     p,
                     Pi = 0.5) {
+  
+  subspace = NULL
   
   if (Model.No == 1) {
     
@@ -35,6 +39,10 @@ RPModel <- function(Model.No,
     
     mu1 <- c(2, 2, rep(0, p - 2))
     mu2 <- c(2, -2, rep(0, p - 2))
+    
+    subspace <- matrix(0, p, 2)
+    subspace[1,1] <- 1
+    subspace[2,2] <- 1
       
     if (p == 100) {
       Signal1 <- rbind(t(matrix(mu1, p, Y11[1, 1])), t(matrix(-mu1, p, Y11[2, 1])))
@@ -74,6 +82,9 @@ RPModel <- function(Model.No,
     X1 <- MASS::mvrnorm(Y1[1, 1], R %*% rep(0, p), R %*% Sigma1 %*% t(R))
     X2 <- MASS::mvrnorm(Y1[2, 1], R %*% mu, R %*% Sigma2 %*% t(R))
     X <- rbind(X1, X2)
+    
+    subspace <- R[, 1:3]
+    
   }
   
   if (Model.No == 3) {
@@ -103,7 +114,9 @@ RPModel <- function(Model.No,
       X  <- rbind(X1, X2)
   }
   
-  return(list(x = X, y = Y))
+  data <- list(x = X, y = Y)
+  
+  return(list(data = data, subspace = subspace))
 }
 
 #' Train/Validation/Test Split
